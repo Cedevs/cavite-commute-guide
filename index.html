@@ -1,24 +1,688 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cavite-commute-guide</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cavite Commute Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <meta property="og:title" content="cavite-commute-guide" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0038A8 0%, #FFFFFF 50%, #CE1126 100%);
+            min-height: 100vh;
+        }
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+        /* Login Screen Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(0,56,168,0.1) 0%, rgba(255,255,255,1) 50%, rgba(206,17,38,0.1) 100%);
+        }
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-title {
+            color: #0038A8;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0038A8;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #0038A8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #002870;
+        }
+
+        .login-note {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Main App Styles */
+        .app-container {
+            display: none;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #0038A8 0%, #CE1126 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .flag-colors {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .flag-color {
+            width: 30px;
+            height: 20px;
+        }
+
+        .flag-blue { background: #0038A8; }
+        .flag-red { background: #CE1126; }
+        .flag-yellow { background: #FCD116; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #0038A8;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .section-description {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .city-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .city-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: #0038A8;
+        }
+
+        .city-image {
+            height: 200px;
+            background: linear-gradient(135deg, #0038A8 0%, #CE1126 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .city-content {
+            padding: 25px;
+        }
+
+        .city-name {
+            color: #0038A8;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .city-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .city-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background: #FCD116;
+            color: #0038A8;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .barangay-count {
+            background: #CE1126;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Barangay Detail Styles */
+        .barangay-detail {
+            display: none;
+            background: linear-gradient(135deg, rgba(0,56,168,0.1) 0%, rgba(255,255,255,1) 50%, rgba(206,17,38,0.1) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .back-btn {
+            background: #0038A8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .back-btn:hover {
+            background: #002870;
+        }
+
+        .city-header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .city-title {
+            color: #0038A8;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .barangays-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .barangay-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #0038A8;
+        }
+
+        .barangay-name {
+            color: #0038A8;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .barangay-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-icon {
+            width: 16px;
+            height: 16px;
+            background: #CE1126;
+            border-radius: 50%;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .info-value {
+            color: #666;
+        }
+
+        .footer {
+            background: #0038A8;
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .footer h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .footer p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+
+        .footer-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FCD116;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .cities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-stats {
+                gap: 30px;
+            }
+
+            .city-title {
+                font-size: 36px;
+            }
+
+            .barangays-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h2 class="login-title">Cavite Commute Guide</h2>
+            <p style="color: #666; margin-bottom: 30px;">Welcome to your comprehensive guide to Cavite transportation</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter any username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter any password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">Access Guide</button>
+                
+                <p class="login-note">
+                    Note: You can enter any username and password to access the guide
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="app-container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>Cavite Commute Guide</h1>
+            <p>Your comprehensive guide to traveling around the Historic Province of Cavite</p>
+            <div class="flag-colors">
+                <div class="flag-color flag-blue"></div>
+                <div class="flag-color flag-red"></div>
+                <div class="flag-color flag-yellow"></div>
+                <span style="margin-left: 15px;">Honoring our Heritage</span>
+            </div>
+        </div>
+
+        <!-- Cities Section -->
+        <div id="citiesSection" class="container">
+            <h2 class="section-title">Explore Cavite Cities</h2>
+            <p class="section-description">
+                Click on any city to discover its barangays, estimated travel times, and fare information 
+                from major transportation hubs.
+            </p>
+
+            <div id="citiesGrid" class="cities-grid">
+                <!-- Cities will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Barangay Detail Section -->
+        <div id="barangaySection" class="barangay-detail">
+            <button id="backBtn" class="back-btn">← Back to Cities</button>
+            
+            <div class="city-header">
+                <h1 id="selectedCityTitle" class="city-title"></h1>
+                <p id="selectedCityDescription"></p>
+            </div>
+
+            <div id="barangaysGrid" class="barangays-grid">
+                <!-- Barangays will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <h3>Cavite: Cradle of Philippine Revolution</h3>
+            <p>
+                From the historic Aguinaldo Shrine in Kawit to the modern developments of Dasmariñas, 
+                Cavite continues to play a vital role in Philippine history and progress.
+            </p>
+            <div class="footer-stats">
+                <div class="stat-item">
+                    <div class="stat-number">1898</div>
+                    <div class="stat-label">Independence Declared</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">23</div>
+                    <div class="stat-label">Municipalities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4M+</div>
+                    <div class="stat-label">Population</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Cavite cities data with barangays
+        const caviteCities = [
+            {
+                id: 'dasmarinas',
+                name: 'Dasmariñas',
+                description: 'Gateway to Cavite, known for De La Salle University',
+                population: '703,141',
+                barangays: [
+                    { name: 'Aguado', eta: '15-20 mins', fare: '₱12-18' },
+                    { name: 'Bagong Bayan', eta: '10-15 mins', fare: '₱10-15' },
+                    { name: 'Burol', eta: '20-25 mins', fare: '₱15-22' },
+                    { name: 'Langkaan', eta: '25-30 mins', fare: '₱18-25' },
+                    { name: 'Paliparan', eta: '30-35 mins', fare: '₱20-28' },
+                    { name: 'San Agustin', eta: '18-22 mins', fare: '₱14-20' },
+                    { name: 'Sabang', eta: '12-18 mins', fare: '₱12-18' },
+                    { name: 'Salawag', eta: '22-28 mins', fare: '₱16-24' }
+                ]
+            },
+            {
+                id: 'imus',
+                name: 'Imus',
+                description: 'Capital city, birthplace of Philippine flag',
+                population: '496,794',
+                barangays: [
+                    { name: 'Alapan I-A', eta: '10-15 mins', fare: '₱8-12' },
+                    { name: 'Bayan Luma', eta: '5-10 mins', fare: '₱6-10' },
+                    { name: 'Bucandala', eta: '15-20 mins', fare: '₱12-16' },
+                    { name: 'Malagasang', eta: '20-25 mins', fare: '₱14-20' },
+                    { name: 'Pag-asa', eta: '18-22 mins', fare: '₱13-18' },
+                    { name: 'Poblacion', eta: '5-8 mins', fare: '₱5-8' },
+                    { name: 'Tanzang Luma', eta: '12-16 mins', fare: '₱10-14' },
+                    { name: 'Toclong', eta: '25-30 mins', fare: '₱18-24' }
+                ]
+            },
+            {
+                id: 'bacoor',
+                name: 'Bacoor',
+                description: 'Historic city, site of Battle of Bacoor',
+                population: '664,625',
+                barangays: [
+                    { name: 'Alima', eta: '20-25 mins', fare: '₱15-20' },
+                    { name: 'Aniban', eta: '15-20 mins', fare: '₱12-18' },
+                    { name: 'Habay', eta: '25-30 mins', fare: '₱18-25' },
+                    { name: 'Kaingin', eta: '18-22 mins', fare: '₱14-19' },
+                    { name: 'Molino', eta: '10-15 mins', fare: '₱8-12' },
+                    { name: 'Panapaan', eta: '12-16 mins', fare: '₱10-14' },
+                    { name: 'Queens Row', eta: '8-12 mins', fare: '₱6-10' },
+                    { name: 'Talaba', eta: '22-28 mins', fare: '₱16-22' }
+                ]
+            },
+            {
+                id: 'kawit',
+                name: 'Kawit',
+                description: 'Birthplace of Philippine independence',
+                population: '107,535',
+                barangays: [
+                    { name: 'Binakayan', eta: '8-12 mins', fare: '₱6-10' },
+                    { name: 'Gahak', eta: '15-20 mins', fare: '₱12-16' },
+                    { name: 'Kaingen', eta: '18-22 mins', fare: '₱14-18' },
+                    { name: 'Magdalo', eta: '10-14 mins', fare: '₱8-12' },
+                    { name: 'Poblacion', eta: '5-8 mins', fare: '₱5-8' },
+                    { name: 'Putik', eta: '12-16 mins', fare: '₱10-14' },
+                    { name: 'San Sebastian', eta: '20-25 mins', fare: '₱15-20' },
+                    { name: 'Tabon', eta: '25-30 mins', fare: '₱18-24' }
+                ]
+            },
+            {
+                id: 'general-trias',
+                name: 'General Trias',
+                description: 'Named after Mariano Trías, growing suburban city',
+                population: '450,583',
+                barangays: [
+                    { name: 'Alingaro', eta: '25-30 mins', fare: '₱18-25' },
+                    { name: 'Arnaldo', eta: '20-25 mins', fare: '₱15-22' },
+                    { name: 'Bacao', eta: '30-35 mins', fare: '₱22-28' },
+                    { name: 'Biclatan', eta: '15-20 mins', fare: '₱12-18' },
+                    { name: 'Manggahan', eta: '18-22 mins', fare: '₱14-20' },
+                    { name: 'Ninety Six', eta: '22-28 mins', fare: '₱16-24' },
+                    { name: 'Poblacion', eta: '10-15 mins', fare: '₱8-12' },
+                    { name: 'San Francisco', eta: '28-32 mins', fare: '₱20-26' }
+                ]
+            },
+            {
+                id: 'tagaytay',
+                name: 'Tagaytay',
+                description: 'Cool climate city with Taal Volcano view',
+                population: '85,330',
+                barangays: [
+                    { name: 'Asisan', eta: '35-40 mins', fare: '₱25-32' },
+                    { name: 'Bagong Tubig', eta: '30-35 mins', fare: '₱22-28' },
+                    { name: 'Calabuso', eta: '40-45 mins', fare: '₱28-35' },
+                    { name: 'Kaybagal', eta: '25-30 mins', fare: '₱18-25' },
+                    { name: 'Maharlika', eta: '20-25 mins', fare: '₱15-22' },
+                    { name: 'Mendez Crossing', eta: '15-20 mins', fare: '₱12-18' },
+                    { name: 'Poblacion', eta: '10-15 mins', fare: '₱8-12' },
+                    { name: 'Tolentino', eta: '45-50 mins', fare: '₱30-38' }
+                ]
+            }
+        ];
+
+        // DOM elements
+        const loginScreen = document.getElementById('loginScreen');
+        const mainApp = document.getElementById('mainApp');
+        const loginForm = document.getElementById('loginForm');
+        const citiesSection = document.getElementById('citiesSection');
+        const barangaySection = document.getElementById('barangaySection');
+        const citiesGrid = document.getElementById('citiesGrid');
+        const barangaysGrid = document.getElementById('barangaysGrid');
+        const backBtn = document.getElementById('backBtn');
+        const selectedCityTitle = document.getElementById('selectedCityTitle');
+        const selectedCityDescription = document.getElementById('selectedCityDescription');
+
+        // Login functionality
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username.trim() && password.trim()) {
+                loginScreen.style.display = 'none';
+                mainApp.style.display = 'block';
+                initializeApp();
+            }
+        });
+
+        // Initialize the application
+        function initializeApp() {
+            renderCities();
+        }
+
+        // Render cities grid
+        function renderCities() {
+            citiesGrid.innerHTML = '';
+            
+            caviteCities.forEach((city, index) => {
+                const cityCard = document.createElement('div');
+                cityCard.className = 'city-card';
+                cityCard.style.animationDelay = `${index * 0.1}s`;
+                cityCard.innerHTML = `
+                    <div class="city-image">
+                        ${city.name}
+                    </div>
+                    <div class="city-content">
+                        <h3 class="city-name">${city.name}</h3>
+                        <p class="city-description">${city.description}</p>
+                        <div class="city-stats">
+                            <span class="badge">Pop: ${city.population}</span>
+                            <span class="barangay-count">${city.barangays.length} Barangays</span>
+                        </div>
+                    </div>
+                `;
+                
+                cityCard.addEventListener('click', () => showBarangays(city));
+                citiesGrid.appendChild(cityCard);
+            });
+        }
+
+        // Show barangays for selected city
+        function showBarangays(city) {
+            selectedCityTitle.textContent = city.name;
+            selectedCityDescription.textContent = city.description;
+            
+            barangaysGrid.innerHTML = '';
+            
+            city.barangays.forEach((barangay, index) => {
+                const barangayCard = document.createElement('div');
+                barangayCard.className = 'barangay-card';
+                barangayCard.style.animationDelay = `${index * 0.1}s`;
+                barangayCard.innerHTML = `
+                    <h4 class="barangay-name">${barangay.name}</h4>
+                    <div class="barangay-info">
+                        <div class="info-item">
+                            <div class="info-icon"></div>
+                            <span class="info-label">ETA:</span>
+                            <span class="info-value">${barangay.eta}</span>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon"></div>
+                            <span class="info-label">Fare:</span>
+                            <span class="info-value">${barangay.fare}</span>
+                        </div>
+                    </div>
+                `;
+                
+                barangaysGrid.appendChild(barangayCard);
+            });
+            
+            citiesSection.style.display = 'none';
+            barangaySection.style.display = 'block';
+        }
+
+        // Back to cities
+        backBtn.addEventListener('click', function() {
+            barangaySection.style.display = 'none';
+            citiesSection.style.display = 'block';
+        });
+    </script>
+</body>
 </html>
